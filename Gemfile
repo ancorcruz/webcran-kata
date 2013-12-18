@@ -44,6 +44,8 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'treetop-dcf'
+
 group :test, :development do
   gem 'rspec-rails'
 end
