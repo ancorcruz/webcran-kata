@@ -7,14 +7,19 @@ class Package < ActiveRecord::Base
   end
 
   def self.create_from_cran info
+    # Hack to fix encoding issues (Some packages have it)
+    sanitized_info = info.inject({}) do |hash, entry|
+      hash.merge({ entry.first => entry.last.force_encoding('UTF-8') })
+    end
+
     attributes = {
-      name:        info["Package"],
-      title:       info["Title"],
-      description: info["Description"],
-      version:     info["Version"],
-      authors:     info["Author"],
-      maintainers: info["Maintainer"],
-      data:        info
+      name:        sanitized_info["Package"],
+      title:       sanitized_info["Title"],
+      description: sanitized_info["Description"],
+      version:     sanitized_info["Version"],
+      authors:     sanitized_info["Author"],
+      maintainers: sanitized_info["Maintainer"],
+      data:        sanitized_info
     }
 
     create attributes

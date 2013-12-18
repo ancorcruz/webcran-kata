@@ -4,6 +4,10 @@ require 'zlib'
 require 'rubygems/package'
 
 module Cran
+  # Hack to avoid open returning an StringIO that fails in Zlib::GzipReader
+  OpenURI::Buffer.send :remove_const, 'StringMax' if OpenURI::Buffer.const_defined?('StringMax')
+  OpenURI::Buffer.const_set 'StringMax', 0
+
   class Client
     def self.fetch base_uri = "http://cran.r-project.org/src/contrib/", &block
       new(base_uri).fetch &block
@@ -40,7 +44,11 @@ module Cran
     end
 
     def get_package name, version
-      open "#{@base_uri}#{name}_#{version}.tar.gz"
+      begin
+        open "#{@base_uri}#{name}_#{version}.tar.gz"
+      rescue OpenURI::HTTPError => exception
+        p "Just ignore it"
+      end
     end
   end
 end
