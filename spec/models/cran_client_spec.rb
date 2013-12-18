@@ -4,14 +4,6 @@ require './lib/cran/client'
 module Cran
   describe Client do
     let(:client) { Client.new 'url' }
-    let(:packages_file) { File.open("spec/assets/PACKAGES").read }
-    let(:package_file)  { File.open("spec/assets/ABCExtremes_1.0.tar.gz") }
-
-    before do
-      Client.stub(:fetch) { client.fetch }
-      client.stub(:get_packages_list).and_return packages_file
-      client.stub(:get_package).and_return       package_file
-    end
 
     describe "#fetch" do
       it "gets all packages information in repository" do
