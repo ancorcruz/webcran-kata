@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Package do
-  let(:package_from_cran) { Cran::Client.fetch.first }
+  let(:package_from_cran) { Cran::Client.fetch { |package| package }.first }
 
   describe "::create_from_cran" do
     it "creates a new package" do

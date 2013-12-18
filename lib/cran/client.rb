@@ -5,18 +5,18 @@ require 'rubygems/package'
 
 module Cran
   class Client
-    def self.fetch base_uri = "http://cran.r-project.org/src/contrib/"
-      new(base_uri).fetch
+    def self.fetch base_uri = "http://cran.r-project.org/src/contrib/", &block
+      new(base_uri).fetch &block
     end
 
     def initialize base_uri
       @base_uri = base_uri
     end
 
-    def fetch
+    def fetch &block
       fetch_packages_list.map do |package|
         package_information = fetch_package_description package["Package"], package["Version"]
-        package.merge package_information
+        block.call package.merge package_information
       end
     end
 
@@ -40,7 +40,7 @@ module Cran
     end
 
     def get_package name, version
-      open("#{@base_uri}#{name}_#{version}.tar.gz").read
+      open "#{@base_uri}#{name}_#{version}.tar.gz"
     end
   end
 end

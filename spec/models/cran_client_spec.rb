@@ -7,7 +7,7 @@ module Cran
 
     describe "#fetch" do
       it "gets all packages information in repository" do
-        package = Client.fetch.first
+        package = Client.fetch { |package| package }.first
         package['Description'].should_not be_empty
       end
     end
