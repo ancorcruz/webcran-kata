@@ -19,8 +19,12 @@ module Cran
 
     def fetch &block
       fetch_packages_list.map do |package|
-        package_information = fetch_package_description package["Package"], package["Version"]
-        block.call package.merge package_information
+        begin
+          package_information = fetch_package_description package["Package"], package["Version"]
+          block.call package.merge package_information
+        rescue
+          next
+        end
       end
     end
 
@@ -44,11 +48,7 @@ module Cran
     end
 
     def get_package name, version
-      begin
-        open "#{@base_uri}#{name}_#{version}.tar.gz"
-      rescue OpenURI::HTTPError => exception
-        p "Just ignore it"
-      end
+      open "#{@base_uri}#{name}_#{version}.tar.gz"
     end
   end
 end
